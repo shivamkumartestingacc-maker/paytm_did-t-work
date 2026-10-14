@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ComponentType } from 'react';
 
 /** Visual/data state a screen can be rendered in. */
 export type ScreenState = 'default' | 'loading' | 'empty' | 'error' | 'success';
@@ -30,4 +30,9 @@ export interface ScreenContext {
 
 export type Params = Record<string, string | number | boolean | undefined>;
 
-export type ScreenComponent = (ctx: ScreenContext) => ReactNode;
+/**
+ * A screen is a real React component that receives the shell context as props.
+ * It must be rendered as JSX (`<Screen {...ctx} />`) — never called as a
+ * function — so its hooks belong to its own fiber.
+ */
+export type ScreenComponent = ComponentType<ScreenContext>;

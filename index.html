@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paytm Rewards — Prototype Shell</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!--
+      No external font <link>: a render-blocking request to fonts.googleapis.com
+      can leave the preview blank if the network path is slow or blocked.
+      The stack in src/index.css uses Inter when it is installed locally and
+      falls back to the platform UI font otherwise.
+    -->
   </head>
   <body>
     <div id="root"></div>

@@ -12,7 +12,18 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`.
+Other scripts:
+
+```bash
+npm run typecheck   # tsc, no emit
+npm run smoke       # mounts the shell in jsdom and clicks through both flows
+npm run build       # production bundle
+```
+
+`npm run smoke` is the regression gate: it drives the real browser code path (effects,
+framer-motion, navigation) and asserts 12 interactions — rail steps, state toggles, in-device
+taps, the scratch-card reveal, the redemption sheet — with zero console errors. Run it after any
+change to `src/shell/` or `src/screens/`.
 
 Stack: Vite + React 18 + TypeScript + Tailwind v4 + framer-motion (chosen so screens can be
 animated on request without a rewrite).

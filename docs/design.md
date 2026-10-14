@@ -599,8 +599,15 @@ src/shell/ScreenStage.tsx          ← transition engine (§10.2)
 src/shell/DeviceFrame.tsx          ← bezel, status bar, auto-fit scaling
 src/shell/FlowRail.tsx             ← left rail
 src/shell/AnnotationPanel.tsx      ← right panel
-src/shell/Shell.tsx                ← workbench layout, keyboard, deep links
+src/shell/Shell.tsx                ← workbench layout (responsive), keyboard, deep links
+src/shell/ErrorBoundary.tsx        ← a crash shows the error, never a blank screen
+src/__smoke__/client.tsx           ← interaction test: clicks through both flows in jsdom
+scripts/run-smoke.mjs              ← npm run smoke
 ```
+
+**Shell invariant:** a screen is a React *component* and is always rendered as JSX
+(`<Screen {...ctx} />`). Calling it as a function merges its hooks into the stage's hook list and
+crashes the tree on the first navigation to a stateful screen. `npm run smoke` guards this.
 
 ### 15.4 Adding a screen (3 steps)
 

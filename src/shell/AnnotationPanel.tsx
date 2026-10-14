@@ -6,6 +6,9 @@ import type { NavEntry } from './useFlowNav';
  * The written layer of the prototype: what the screen is, why it exists,
  * and the design/motion/PRD notes attached to it.
  * All text is authored in src/flows/index.ts — no code changes needed to edit.
+ *
+ * `variant="side"`  → right-hand column (wide viewports), collapsible
+ * `variant="below"` → full-width panel under the device (narrow preview panes)
  */
 export function AnnotationPanel({
   flow,
@@ -14,6 +17,7 @@ export function AnnotationPanel({
   stack,
   open,
   onToggle,
+  variant = 'side',
 }: {
   flow: Flow;
   step: FlowStep | null;
@@ -21,28 +25,37 @@ export function AnnotationPanel({
   stack: NavEntry[];
   open: boolean;
   onToggle: () => void;
+  variant?: 'side' | 'below';
 }) {
   const a = step?.annotation;
+  const below = variant === 'below';
+  const expanded = below || open;
 
   return (
     <aside
-      className={`relative flex h-full shrink-0 flex-col border-l border-white/8 bg-[#11151c] transition-[width] duration-200 ${
-        open ? 'w-[420px]' : 'w-[46px]'
-      }`}
+      className={
+        below
+          ? 'flex h-full w-full shrink-0 flex-col border-t border-white/8 bg-[#11151c]'
+          : `relative flex h-full shrink-0 flex-col border-l border-white/8 bg-[#11151c] transition-[width] duration-200 ${
+              open ? 'w-[clamp(300px,28vw,420px)]' : 'w-[46px]'
+            }`
+      }
     >
-      <button
-        onClick={onToggle}
-        aria-label={open ? 'Collapse annotations' : 'Expand annotations'}
-        className="absolute -left-0 top-3 z-10 grid h-8 w-[46px] place-items-center text-white/45 transition hover:text-white"
-      >
-        <motion.span animate={{ rotate: open ? 0 : 180 }} transition={{ duration: 0.2 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M9 5l7 7-7 7" />
-          </svg>
-        </motion.span>
-      </button>
+      {!below && (
+        <button
+          onClick={onToggle}
+          aria-label={open ? 'Collapse annotations' : 'Expand annotations'}
+          className="absolute left-0 top-3 z-10 grid h-8 w-[46px] place-items-center text-white/45 transition hover:text-white"
+        >
+          <motion.span animate={{ rotate: open ? 0 : 180 }} transition={{ duration: 0.2 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </motion.span>
+        </button>
+      )}
 
-      {!open ? (
+      {!expanded ? (
         <div className="flex h-full items-center justify-center">
           <span className="rotate-90 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">
             Annotations
@@ -50,7 +63,11 @@ export function AnnotationPanel({
         </div>
       ) : (
         <>
-          <div className="shrink-0 border-b border-white/8 py-3 pl-[54px] pr-4">
+          <div
+            className={`shrink-0 border-b border-white/8 pr-4 ${
+              below ? 'py-2.5 pl-4' : 'py-3 pl-[54px]'
+            }`}
+          >
             <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/35">
               {flow.name}
             </div>
@@ -62,7 +79,6 @@ export function AnnotationPanel({
               <Pill mono>{entry.transition}</Pill>
               {stack.length > 1 && <Pill>depth {stack.length}</Pill>}
             </div>
-            {/* Breadcrumb */}
             <div className="mt-2 flex flex-wrap items-center gap-1 text-[10.5px] text-white/40">
               {stack.map((s, i) => (
                 <span key={s.key} className="flex items-center gap-1">
@@ -133,9 +149,7 @@ export function AnnotationPanel({
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/35">{children}</div>
-  );
+  return <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/35">{children}</div>;
 }
 
 function Block({ title, body, accent = false }: { title: string; body: string; accent?: boolean }) {

@@ -16,7 +16,7 @@ export function useFitScale(width: number, height: number, pad = 32) {
       const rect = el.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       const s = Math.min((rect.width - pad) / width, (rect.height - pad) / height);
-      setScale(Math.max(0.3, Math.min(s, 1.15)));
+      setScale(Math.max(0.24, Math.min(s, 1.15)));
     };
 
     compute();

@@ -1,4 +1,4 @@
-import type { ScreenComponent } from './types';
+import type { ScreenComponent, ScreenContext } from './types';
 import HomeScreen from './sample/HomeScreen';
 import ScanPayScreen from './sample/ScanPayScreen';
 import PaymentSuccessScreen from './sample/PaymentSuccessScreen';
@@ -43,17 +43,23 @@ export function screenChrome(id: string): { statusText: 'light' | 'dark'; status
   return map[id] ?? { statusText: 'dark', statusBg: 'bg-surface-app' };
 }
 
-export function getScreen(id: string): ScreenComponent {
+/** Fallback for a step that points at an unregistered screen id. */
+function MissingScreen(ctx: ScreenContext) {
   return (
-    screens[id] ??
-    ((ctx) => (
-      <div className="flex h-full flex-col bg-surface-app">
-        <EmptyState
-          title={`No screen registered for “${id}”`}
-          body="Add it to src/screens/registry.ts — flows reference screens by id."
-          action={<Button size="sm" block={false} variant="secondary" onClick={() => ctx.back()}>Go back</Button>}
-        />
-      </div>
-    ))
+    <div className="flex h-full flex-col bg-surface-app">
+      <EmptyState
+        title="Screen not registered"
+        body="This step points at a screen id with no component yet. Register it in src/screens/registry.tsx — flows reference screens by id."
+        action={
+          <Button size="sm" block={false} variant="secondary" onClick={() => ctx.back()}>
+            Go back
+          </Button>
+        }
+      />
+    </div>
   );
+}
+
+export function getScreen(id: string): ScreenComponent {
+  return screens[id] ?? MissingScreen;
 }

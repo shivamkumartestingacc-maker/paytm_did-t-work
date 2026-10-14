@@ -107,7 +107,7 @@ export function ScreenStage({
         transition={v.transition}
         className="absolute inset-0 overflow-hidden bg-surface-app"
       >
-        {Screen(ctx)}
+        <Screen {...ctx} />
       </motion.div>
     </AnimatePresence>
   );
