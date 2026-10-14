@@ -1,0 +1,131 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Paytm Rewards — provisional design tokens
+   Source: public Paytm app visual language.
+   STATUS: PROVISIONAL. To be re-tuned after the screenshot audit
+   (see docs/design.md → §13 Open items).
+   ------------------------------------------------------------------ */
+@theme {
+  /* Brand */
+  --color-brand-navy: #002970;
+  --color-brand-navy-700: #001f54;
+  --color-brand-sky: #00baf2;
+  --color-brand-sky-100: #e0f6fe;
+  --color-brand-ink: #0b1220;
+
+  /* Rewards / value accents */
+  --color-reward-gold: #f5a623;
+  --color-reward-ink: #5a3a00;
+  --color-reward-gold-100: #fff4e0;
+  --color-reward-cashback: #1c9c62;
+
+  /* Feedback */
+  --color-success: #0d6e33;
+  --color-success-soft: #e6f6ec;
+  --color-warning: #9a5c00;
+  --color-warning-soft: #fff4e0;
+  --color-danger: #b42318;
+  --color-danger-soft: #fdecea;
+  --color-info: #0066cc;
+  --color-info-soft: #e8f2ff;
+
+  /* Neutrals */
+  --color-surface-app: #f2f4f8;
+  --color-surface-card: #ffffff;
+  --color-surface-sunken: #eef1f6;
+  --color-text-primary: #0b1220;
+  --color-text-secondary: #4e5c73;
+  --color-text-tertiary: #5f6a7c;
+  --color-text-inverse: #ffffff;
+  --color-border-hairline: #e4e8ef;
+  --color-border-strong: #cfd6e0;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* Type scale (mobile-first) */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --text-2xs: 10px;
+  --text-2xs--line-height: 14px;
+  --text-xs: 11px;
+  --text-xs--line-height: 15px;
+  --text-sm: 12px;
+  --text-sm--line-height: 16px;
+  --text-base: 13px;
+  --text-base--line-height: 18px;
+  --text-md: 14px;
+  --text-md--line-height: 20px;
+  --text-lg: 16px;
+  --text-lg--line-height: 22px;
+  --text-xl: 18px;
+  --text-xl--line-height: 24px;
+  --text-2xl: 20px;
+  --text-2xl--line-height: 26px;
+  --text-3xl: 24px;
+  --text-3xl--line-height: 30px;
+  --text-4xl: 28px;
+  --text-4xl--line-height: 34px;
+  --text-display: 34px;
+  --text-display--line-height: 40px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.06), 0 1px 1px rgba(11, 18, 32, 0.04);
+  --shadow-raised: 0 4px 12px rgba(11, 18, 32, 0.08), 0 1px 3px rgba(11, 18, 32, 0.06);
+  --shadow-float: 0 12px 32px rgba(11, 18, 32, 0.18);
+  --shadow-sheet: 0 -8px 32px rgba(11, 18, 32, 0.16);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #0d1117;
+  color: var(--color-text-primary);
+}
+
+/* Numeric alignment for money / points */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Hide scrollbars inside the phone viewport but keep scrolling */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Thin scrollbars for the shell chrome */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3b4657 transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: #3b4657;
+  border-radius: 999px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
