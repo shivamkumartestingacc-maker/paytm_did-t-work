@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dithered Dot Portrait — canvas renderer</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ─────────────  VIEWPORT  ───────────── -->
+  <main class="stage" id="stage">
+    <canvas id="canvas"></canvas>
+
+    <div class="drop-hint" id="dropHint">
+      <strong>Drop an image</strong>
+      <span>or use the Load button — PNG / JPG / WEBP</span>
+    </div>
+
+    <div class="stage-badge">
+      <span id="statGrid">—</span>
+      <span class="dot-sep">•</span>
+      <span id="statDots">—</span>
+      <span class="dot-sep">•</span>
+      <span id="statFps">—</span>
+    </div>
+  </main>
+
+  <!-- ─────────────  PANEL  ───────────── -->
+  <aside class="panel">
+    <header class="brand">
+      <h1>DITHER<span>·</span>FACE</h1>
+      <p>halftone dots + pixel dither</p>
+    </header>
+
+    <section class="group">
+      <h2>Source</h2>
+      <div class="row">
+        <label class="btn wide">
+          Load image
+          <input type="file" id="file" accept="image/*" hidden />
+        </label>
+        <button class="btn" id="reset" title="Back to default image">Reset</button>
+      </div>
+      <div class="row presets" id="presets"></div>
+    </section>
+
+    <section class="group">
+      <h2>Render</h2>
+
+      <label class="ctl">
+        <span>Mode</span>
+        <select id="mode">
+          <option value="dots" selected>Halftone dots</option>
+          <option value="pixel">Pixel blocks</option>
+          <option value="hybrid">Dots + pixel hybrid</option>
+        </select>
+      </label>
+
+      <label class="ctl">
+        <span>Shadow cut <em id="cutLabel">0.14</em></span>
+        <input type="range" id="cut" min="0.02" max="0.42" value="0.14" step="0.01" />
+      </label>
+
+      <label class="ctl">
+        <span>Dither <em id="ditherLabel">Bayer 8×8</em></span>
+        <select id="dither">
+          <option value="none">None (smooth)</option>
+          <option value="bayer2">Bayer 2×2</option>
+          <option value="bayer4">Bayer 4×4</option>
+          <option value="bayer8" selected>Bayer 8×8</option>
+          <option value="fs">Floyd–Steinberg</option>
+          <option value="atkinson">Atkinson</option>
+        </select>
+      </label>
+
+      <label class="ctl">
+        <span>Grid <em id="colsLabel">116 cols</em></span>
+        <input type="range" id="cols" min="24" max="240" value="116" step="1" />
+      </label>
+
+      <label class="ctl">
+        <span>Dot scale <em id="scaleLabel">1.00</em></span>
+        <input type="range" id="scale" min="0.3" max="1.6" value="1" step="0.02" />
+      </label>
+
+      <label class="ctl">
+        <span>Tone levels <em id="levelsLabel">4</em></span>
+        <input type="range" id="levels" min="2" max="12" value="4" step="1" />
+      </label>
+
+      <label class="ctl">
+        <span>Auto levels</span>
+        <input type="checkbox" id="auto" class="switch" checked />
+      </label>
+
+      <label class="ctl">
+        <span>Shadow crush <em id="gammaLabel">1.05</em></span>
+        <input type="range" id="gamma" min="0.6" max="3" value="1.05" step="0.05" />
+      </label>
+
+      <label class="ctl">
+        <span>Contrast <em id="contrastLabel">1.05</em></span>
+        <input type="range" id="contrast" min="0.4" max="2.4" value="1.05" step="0.05" />
+      </label>
+
+      <label class="ctl">
+        <span>Brightness <em id="brightLabel">0.00</em></span>
+        <input type="range" id="bright" min="-0.4" max="0.4" value="0" step="0.01" />
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Shape</h2>
+
+      <div class="row seg" id="shape">
+        <button data-shape="circle" class="on">●</button>
+        <button data-shape="square">■</button>
+        <button data-shape="diamond">◆</button>
+        <button data-shape="plus">✚</button>
+      </div>
+
+      <label class="ctl">
+        <span>Dot gap <em id="gapLabel">0.10</em></span>
+        <input type="range" id="gap" min="0" max="0.45" value="0.1" step="0.01" />
+      </label>
+
+      <label class="ctl">
+        <span>Min dot <em id="floorLabel">0.25</em></span>
+        <input type="range" id="floor" min="0" max="0.7" value="0.25" step="0.01" />
+      </label>
+
+      <label class="ctl">
+        <span>Invert<span class="hint">dark-on-light</span></span>
+        <input type="checkbox" id="invert" class="switch" />
+      </label>
+
+      <label class="ctl">
+        <span>Glow / bloom</span>
+        <input type="checkbox" id="glow" class="switch" />
+      </label>
+
+      <label class="ctl">
+        <span>Scanlines</span>
+        <input type="checkbox" id="scan" class="switch" />
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Ink</h2>
+      <div class="row swatches">
+        <label class="swatch">
+          <input type="color" id="bg" value="#07080c" />
+          <span>Paper</span>
+        </label>
+        <label class="swatch">
+          <input type="color" id="fg" value="#e9eef7" />
+          <span>Ink</span>
+        </label>
+        <label class="swatch">
+          <input type="color" id="accent" value="#ff3d68" />
+          <span>Accent</span>
+        </label>
+      </div>
+
+      <label class="ctl">
+        <span>Accent mix <em id="mixLabel">0.35</em></span>
+        <input type="range" id="mix" min="0" max="1" value="0.35" step="0.01" />
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Motion</h2>
+      <label class="ctl">
+        <span>Reveal wave</span>
+        <input type="checkbox" id="reveal" class="switch" checked />
+      </label>
+      <label class="ctl">
+        <span>Mouse ripple</span>
+        <input type="checkbox" id="ripple" class="switch" />
+      </label>
+      <div class="row">
+        <button class="btn wide" id="replay">▶ Replay</button>
+        <button class="btn" id="save" title="Export PNG">⤓ PNG</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      drop a new photo anywhere on the canvas to retarget the face
+    </footer>
+  </aside>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
