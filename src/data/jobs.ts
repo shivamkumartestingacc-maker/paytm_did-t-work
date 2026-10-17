@@ -1,0 +1,206 @@
+import type { Job } from '../types';
+
+/**
+ * Sample roles. All companies and details are fictional.
+ * Replace this module with a real feed later; the UI only reads the Job shape.
+ */
+export const jobs: Job[] = [
+  {
+    id: 'product-designer-northstar',
+    title: 'Product Designer',
+    company: 'Northstar Studio',
+    companyMark: 'NORTHSTAR',
+    region: 'Bengaluru',
+    location: 'Bengaluru, Karnataka',
+    workMode: 'Hybrid',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-14',
+    category: 'Design',
+    summary:
+      'Shape end-to-end flows for a small team building planning tools for independent studios. You will work from research through polished prototypes, and sit in on customer calls.',
+    responsibilities: [
+      'Turn open-ended problems into flows, prototypes and clear decisions.',
+      'Run lightweight usability sessions and bring the findings back to the team.',
+      'Maintain the shared component library alongside the engineers.',
+    ],
+    requirements: [
+      'Three or more years designing products for web or mobile.',
+      'A portfolio that shows process as well as final screens.',
+      'Comfort presenting trade-offs to non-designers.',
+    ],
+    niceToHave: ['Experience with design systems or tokens.', 'Some front-end literacy.'],
+  },
+  {
+    id: 'frontend-engineer-fieldnote',
+    title: 'Frontend Engineer',
+    company: 'Fieldnote',
+    companyMark: 'Fieldnote',
+    region: 'Remote',
+    location: 'Remote, India time zones',
+    workMode: 'Remote',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-12',
+    category: 'Engineering',
+    summary:
+      'Build the notes and sharing surfaces of a writing tool used by field researchers. You will own performance, accessibility and the editor integration.',
+    responsibilities: [
+      'Ship features in TypeScript and React with tests that matter.',
+      'Improve load time and responsiveness on slow mobile connections.',
+      'Review pull requests and mentor junior engineers.',
+    ],
+    requirements: [
+      'Strong working knowledge of TypeScript and modern React.',
+      'Experience with accessible, keyboard-first interfaces.',
+      'Clear written updates for an asynchronous team.',
+    ],
+    niceToHave: ['Rich-text editor experience.', 'Familiarity with offline-first apps.'],
+  },
+  {
+    id: 'brand-designer-common-practice',
+    title: 'Brand Designer',
+    company: 'Common Practice',
+    companyMark: 'Common Practice',
+    region: 'Bengaluru',
+    location: 'Bengaluru, Karnataka',
+    workMode: 'On-site',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-10',
+    category: 'Design',
+    summary:
+      'Lead identity and print work for a cooperative of local makers. You will design packaging, signage and the occasional poster, and keep the visual voice consistent across them.',
+    responsibilities: [
+      'Own brand systems, from logotypes to packaging and environmental graphics.',
+      'Art-direct photography and illustration commissions.',
+      'Prepare files for print vendors and check proofs on press.',
+    ],
+    requirements: [
+      'Solid typography and layout skills, on screen and in print.',
+      'A portfolio with at least two complete identity projects.',
+      'Comfort working on site with the workshop team.',
+    ],
+  },
+  {
+    id: 'product-manager-morrow-labs',
+    title: 'Product Manager',
+    company: 'Morrow Labs',
+    companyMark: 'MORROW',
+    region: 'Remote',
+    location: 'Remote, India',
+    workMode: 'Remote',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-07',
+    category: 'Product',
+    summary:
+      'Own the roadmap for a scheduling product used by clinics and community centres. You will set priorities with design and engineering and keep the team close to the people using it.',
+    responsibilities: [
+      'Write clear problem statements and success measures for each initiative.',
+      'Run discovery interviews and prioritise the backlog with the team.',
+      'Communicate launches and trade-offs to partners.',
+    ],
+    requirements: [
+      'Three or more years as a product manager in a software team.',
+      'Comfort reading simple product data and drawing conclusions carefully.',
+      'Experience working with designers and engineers in a shared process.',
+    ],
+    niceToHave: ['Background in healthcare or public-sector software.'],
+  },
+  {
+    id: 'creative-developer-paperplane-works',
+    title: 'Creative Developer',
+    company: 'Paperplane Works',
+    companyMark: 'Paperplane',
+    region: 'Bengaluru',
+    location: 'Bengaluru, Karnataka',
+    workMode: 'Hybrid',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-03',
+    category: 'Engineering',
+    summary:
+      'Build interactive campaign sites and installations that bring the studio’s motion and graphic work to the browser. Expect a mix of WebGL experiments and production-grade delivery.',
+    responsibilities: [
+      'Prototype interactive ideas quickly, then harden the good ones.',
+      'Work with designers on motion and performance budgets.',
+      'Maintain the studio’s internal animation toolkit.',
+    ],
+    requirements: [
+      'Strong JavaScript and CSS, with an eye for timing and detail.',
+      'Experience with a canvas or WebGL library, or a motion library such as GSAP.',
+      'A portfolio of shipped creative work.',
+    ],
+    niceToHave: ['Shader experience.', 'Hardware or physical installation work.'],
+  },
+  {
+    id: 'ux-researcher-good-measure',
+    title: 'UX Researcher',
+    company: 'Good Measure',
+    companyMark: 'Good Measure',
+    region: 'Remote',
+    location: 'Remote, India',
+    workMode: 'Remote',
+    employmentType: 'Contract, 6 months',
+    postedAt: '2026-09-28',
+    category: 'Research',
+    summary:
+      'Plan and run studies for a team building tools for small-business bookkeeping. You will work across interviews, surveys and usability testing, and write findings people actually read.',
+    responsibilities: [
+      'Design research plans and recruit participants responsibly.',
+      'Synthesise findings into short, decision-ready reports.',
+      'Coach product teams to run their own quick tests.',
+    ],
+    requirements: [
+      'Experience running interviews and usability tests end to end.',
+      'Clear, plain writing and a habit of showing the evidence.',
+      'Comfort with remote facilitation across time zones.',
+    ],
+  },
+  {
+    id: 'content-designer-small-hours',
+    title: 'Content Designer',
+    company: 'Small Hours',
+    companyMark: 'small hours',
+    region: 'Mumbai',
+    location: 'Mumbai, Maharashtra',
+    workMode: 'Hybrid',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-16',
+    category: 'Content',
+    summary:
+      'Write and structure the words inside a banking-adjacent savings app for first-time users. You will shape microcopy, error messages and onboarding in close work with design.',
+    responsibilities: [
+      'Write and edit interface copy across onboarding and account flows.',
+      'Create content guidelines and a shared voice document.',
+      'Test copy with users and revise based on what they struggle with.',
+    ],
+    requirements: [
+      'Demonstrable work writing for digital products.',
+      'Strong sense of plain language and accessibility.',
+      'Ability to work with design and legal reviewers without losing clarity.',
+    ],
+    niceToHave: ['Experience with content systems or design tokens for text.'],
+  },
+  {
+    id: 'design-engineer-studio-relay',
+    title: 'Design Engineer',
+    company: 'Studio Relay',
+    companyMark: 'RELAY',
+    region: 'Remote',
+    location: 'Remote, India',
+    workMode: 'Remote',
+    employmentType: 'Full-time',
+    postedAt: '2026-10-16',
+    category: 'Engineering',
+    summary:
+      'Sit between design and engineering to build the components and prototypes the whole studio uses. You will translate Figma intent into code that holds up in production.',
+    responsibilities: [
+      'Build and document shared components in React and CSS.',
+      'Prototype interaction ideas for client work in a few days, not weeks.',
+      'Keep design tokens and code in sync.',
+    ],
+    requirements: [
+      'Strong front-end skills and an eye for interface detail.',
+      'Comfort reading and sketching in a design tool.',
+      'Good judgment about when a prototype is enough.',
+    ],
+    niceToHave: ['Experience with motion or animation libraries.'],
+  },
+];

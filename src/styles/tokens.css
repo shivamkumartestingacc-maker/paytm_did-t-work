@@ -1,0 +1,55 @@
+/* Design tokens from design-system.md. Keep values here; components read variables only. */
+:root {
+  --paper: #f4efe5;
+  --paper-light: #fbfaf6;
+  --paper-shadow: #e5dccb;
+  --paper-aged: #eae0cf;
+  --ink: #102c46;
+  --ink-soft: #35536a;
+  --stamp-blue: #315f83;
+  --stamp-blue-light: #7894a6;
+  --pencil: #77766f;
+  --annotation-faint: #f6f6f0;
+  --accent-red: #a64f48;
+  --text-primary: #182a38;
+  --text-secondary: #5a656d; /* darkened from #657078 to keep >4.5:1 on paper */
+  --line: #d7d0c4;
+  --line-strong: #8a8377;
+  --surface-white: #fffefa;
+  --wash-blue: #e2eaf0;
+  --focus: #1f6feb;
+  --success: #2f6a4f;
+  --error: #a33c35;
+
+  --font-display: 'DM Serif Display', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-hand: 'Caveat', 'Bradley Hand', 'Segoe Script', cursive;
+
+  --text-display-xl: clamp(2.7rem, 5.6vw, 5rem);
+  --text-display-l: clamp(2rem, 4vw, 3.4rem);
+  --text-heading: clamp(1.4rem, 2.4vw, 2rem);
+  --text-body: 1rem;
+  --text-small: 0.9375rem;
+  --text-meta: 0.8125rem;
+  --text-micro: 0.6875rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --content-max: 80rem;
+  --page-gutter: clamp(1rem, 4vw, 4rem);
+
+  --frame: 16px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-paper: cubic-bezier(0.65, 0, 0.35, 1);
+  --shadow-paper: 0 1px 0 rgba(16, 44, 70, 0.04), 0 12px 22px -18px rgba(16, 44, 70, 0.4);
+}
