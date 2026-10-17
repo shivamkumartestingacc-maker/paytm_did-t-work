@@ -27,7 +27,7 @@ function angleOf(el: HTMLElement): number {
 }
 
 function originTransformTarget(origin: HTMLElement): HTMLElement {
-  return (origin.closest('.hero-piece, .job-slot') as HTMLElement | null) ?? origin;
+  return (origin.closest('.board-piece') as HTMLElement | null) ?? origin;
 }
 
 export function JobDialog({ job, origin, onExit }: Props) {

@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { Job } from './types';
 import { SiteHeader } from './components/SiteHeader';
-import { Hero } from './components/Hero';
-import { JobBoard } from './components/JobBoard';
+import { Board } from './components/Board';
 import { JobDialog } from './components/JobDialog';
 
 type Active = { job: Job; origin: HTMLElement };
@@ -37,8 +36,7 @@ export default function App() {
       <div id="app" inert={isOpen ? true : undefined}>
         <SiteHeader />
         <main id="main">
-          <Hero onOpen={openJob} />
-          <JobBoard onOpen={openJob} />
+          <Board onOpen={openJob} />
 
           <section id="about" className="plain-section" aria-labelledby="about-title">
             <div className="plain-section__inner">

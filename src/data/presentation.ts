@@ -9,22 +9,17 @@ export type ClipTone = 'light' | 'aged' | 'wash';
 export type ClipStyle = {
   variant: ClipVariant;
   tone: ClipTone;
-  /** Subtle rotation used in the grid's loose "before alignment" state (degrees). */
-  looseRotate: number;
-  /** Loose offset in px before the grid card settles into its cell. */
-  looseX: number;
-  looseY: number;
 };
 
 export const clipStyles: Record<string, ClipStyle> = {
-  'product-designer-northstar': { variant: 'notice', tone: 'light', looseRotate: -4, looseX: -36, looseY: -70 },
-  'frontend-engineer-fieldnote': { variant: 'torn', tone: 'aged', looseRotate: 3, looseX: 48, looseY: -110 },
-  'brand-designer-common-practice': { variant: 'stamp', tone: 'light', looseRotate: -2.5, looseX: -60, looseY: -40 },
-  'product-manager-morrow-labs': { variant: 'index', tone: 'wash', looseRotate: 4, looseX: 30, looseY: -90 },
-  'creative-developer-paperplane-works': { variant: 'notice', tone: 'aged', looseRotate: 2.5, looseX: -20, looseY: -120 },
-  'ux-researcher-good-measure': { variant: 'photocopy', tone: 'light', looseRotate: -3, looseX: 60, looseY: -60 },
-  'content-designer-small-hours': { variant: 'torn', tone: 'light', looseRotate: 5, looseX: -48, looseY: -100 },
-  'design-engineer-studio-relay': { variant: 'index', tone: 'aged', looseRotate: -2, looseX: 24, looseY: -80 },
+  'product-designer-northstar': { variant: 'notice', tone: 'light' },
+  'frontend-engineer-fieldnote': { variant: 'torn', tone: 'aged' },
+  'brand-designer-common-practice': { variant: 'stamp', tone: 'light' },
+  'product-manager-morrow-labs': { variant: 'index', tone: 'wash' },
+  'creative-developer-paperplane-works': { variant: 'notice', tone: 'aged' },
+  'ux-researcher-good-measure': { variant: 'photocopy', tone: 'light' },
+  'content-designer-small-hours': { variant: 'torn', tone: 'light' },
+  'design-engineer-studio-relay': { variant: 'index', tone: 'aged' },
 };
 
 /** Hero collage placement, in design units of the stage (px at scale 1). */
@@ -43,6 +38,8 @@ export type HeroLayout = {
   name: 'desktop' | 'tablet' | 'mobile';
   width: number;
   height: number;
+  /** Clipping height in collage state (design px). */
+  pieceHeight: number;
   pieces: HeroPiece[];
   marks: HeroMark[];
 };
@@ -52,6 +49,7 @@ export const heroLayouts: Record<HeroLayout['name'], HeroLayout> = {
     name: 'desktop',
     width: 1120,
     height: 690,
+    pieceHeight: 184,
     pieces: [
       { id: 'product-designer-northstar', x: 70, y: 40, w: 250, rot: -4, z: 2 },
       { id: 'frontend-engineer-fieldnote', x: 350, y: 14, w: 230, rot: 2.5, z: 3 },
@@ -82,6 +80,7 @@ export const heroLayouts: Record<HeroLayout['name'], HeroLayout> = {
     name: 'tablet',
     width: 720,
     height: 720,
+    pieceHeight: 180,
     pieces: [
       { id: 'product-designer-northstar', x: 22, y: 12, w: 214, rot: -3, z: 2 },
       { id: 'frontend-engineer-fieldnote', x: 258, y: 40, w: 204, rot: 2.5, z: 3 },
@@ -103,6 +102,7 @@ export const heroLayouts: Record<HeroLayout['name'], HeroLayout> = {
     name: 'mobile',
     width: 360,
     height: 1000,
+    pieceHeight: 170,
     pieces: [
       { id: 'product-designer-northstar', x: 14, y: 6, w: 176, rot: -3, z: 2 },
       { id: 'frontend-engineer-fieldnote', x: 186, y: 34, w: 164, rot: 3, z: 3 },

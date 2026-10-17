@@ -1,81 +1,32 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Job, WorkMode } from '../types';
 import { jobs } from '../data/jobs';
-import { clipStyles } from '../data/presentation';
-import { GridClipping } from './ClippingCard';
-import { gsap, ScrollTrigger } from '../lib/gsap';
-import { useReducedMotion } from '../hooks/useMediaQuery';
 
-type Props = {
-  onOpen: (job: Job, origin: HTMLElement) => void;
-};
-
-type Arrangement = 'All' | WorkMode;
-type Region = 'All' | Job['region'];
+export type Arrangement = 'All' | WorkMode;
+export type Region = 'All' | Job['region'];
 
 const ARRANGEMENTS: Arrangement[] = ['All', 'Remote', 'Hybrid', 'On-site'];
 const REGIONS: Region[] = ['All', 'Bengaluru', 'Mumbai', 'Remote'];
 
-export function JobBoard({ onOpen }: Props) {
-  const [arrangement, setArrangement] = useState<Arrangement>('All');
-  const [region, setRegion] = useState<Region>('All');
-  const reduced = useReducedMotion();
-  const rootRef = useRef<HTMLDivElement>(null);
+type Props = {
+  visibleJobs: Job[];
+  arrangement: Arrangement;
+  region: Region;
+  onArrangement: (a: Arrangement) => void;
+  onRegion: (r: Region) => void;
+};
 
-  const visible = useMemo(
-    () =>
-      jobs.filter(
-        (j) =>
-          (arrangement === 'All' || j.workMode === arrangement) &&
-          (region === 'All' || j.region === region),
-      ),
-    [arrangement, region],
-  );
-
-  const idsKey = visible.map((j) => j.id).join('|');
-
-  // Gather: each grid slot starts displaced and rotated like loose paper, then settles as it scrolls into view.
-  // Scrubbed to scroll position (no pinning, no scroll hijacking). Re-created when the visible set changes.
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root || reduced) return;
-    const ctx = gsap.context(() => {
-      const slots = gsap.utils.toArray<HTMLElement>('.job-slot', root);
-      slots.forEach((el) => {
-        const id = el.dataset.jobId ?? '';
-        const style = clipStyles[id];
-        if (!style) return;
-        gsap.fromTo(
-          el,
-          { x: style.looseX, y: style.looseY, rotation: style.looseRotate, scale: 0.96, transformOrigin: '50% 50%' },
-          {
-            x: 0,
-            y: 0,
-            rotation: 0,
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 98%',
-              end: 'top 52%',
-              scrub: 0.8,
-              invalidateOnRefresh: true,
-            },
-          },
-        );
-      });
-      ScrollTrigger.refresh();
-    }, root);
-    return () => ctx.revert();
-  }, [idsKey, reduced]);
-
+/**
+ * Roles heading, filters, and the grid skeleton. The grid cells are empty
+ * placeholders; the clippings are placed onto them by Board.
+ */
+export function JobBoard({ visibleJobs, arrangement, region, onArrangement, onRegion }: Props) {
   const reset = () => {
-    setArrangement('All');
-    setRegion('All');
+    onArrangement('All');
+    onRegion('All');
   };
 
   return (
-    <section id="roles" className="roles" aria-labelledby="roles-title" ref={rootRef}>
+    <section id="roles" className="roles" aria-labelledby="roles-title">
       <div className="roles__inner">
         <header className="roles__head">
           <p className="roles__eyebrow">Open roles · {jobs.length} sample listings</p>
@@ -100,7 +51,7 @@ export function JobBoard({ onOpen }: Props) {
                   type="button"
                   className="chip"
                   aria-pressed={arrangement === a}
-                  onClick={() => setArrangement(a)}
+                  onClick={() => onArrangement(a)}
                 >
                   {a === 'All' ? 'Any' : a}
                 </button>
@@ -116,7 +67,7 @@ export function JobBoard({ onOpen }: Props) {
                   type="button"
                   className="chip"
                   aria-pressed={region === r}
-                  onClick={() => setRegion(r)}
+                  onClick={() => onRegion(r)}
                 >
                   {r === 'All' ? 'Any' : r}
                 </button>
@@ -124,16 +75,14 @@ export function JobBoard({ onOpen }: Props) {
             </div>
           </fieldset>
           <p className="filters__count" role="status" aria-live="polite">
-            Showing {visible.length} of {jobs.length} roles
+            Showing {visibleJobs.length} of {jobs.length} roles
           </p>
         </div>
 
-        {visible.length > 0 ? (
-          <div className="job-grid" role="list">
-            {visible.map((job) => (
-              <div key={job.id} className="job-slot" data-job-id={job.id} role="listitem">
-                <GridClipping job={job} onOpen={onOpen} />
-              </div>
+        {visibleJobs.length > 0 ? (
+          <div className="job-grid">
+            {visibleJobs.map((job) => (
+              <div key={job.id} className="grid-slot" data-job-id={job.id} aria-hidden="true" />
             ))}
           </div>
         ) : (
