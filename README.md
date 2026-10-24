@@ -3,39 +3,55 @@
 A long-form product-design case study with an interactive mobile prototype for a Paytm rewards concept.
 Independent concept: not affiliated with, commissioned or endorsed by Paytm. All payments and rewards are simulated.
 
-## Run / host
+## Deployment (use the Vite preset)
 
-```bash
-npm install
-npm run dev            # local development
-npm test               # reducer + config unit tests
-npm run build:single   # one self-contained HTML file in dist-single/ — host it anywhere (Netlify drop, GitHub Pages, S3)
-```
+This repo contains a **pre-built, self-contained `index.html`** plus a minimal Vite wrapper
+(`package.json`, `package-lock.json`, and `vite.config.js`). The wrapper exists for hosts
+whose deployment panel does not offer an "Other/Static" preset. During deployment, Vite
+processes the checked-in file and publishes a normal Vite build from `dist/`.
 
-E2E checks (the 12 required scenarios + walkthrough):
+Use these deployment settings:
 
-```bash
-npm run build && npx vite preview --port 4180 &
-node e2e/scenarios.mjs
-```
-
-## Where things live
-
-| File | What it holds |
+| Setting | Value |
 |---|---|
-| `src/config.ts` | **All demo configuration**: threshold (5), start progress, minimum amount, eligible payment types, reward cards and their outcome (50% / 100%), benefit bounds, expiry, processing and scan timings, payment presets, persistence. |
-| `src/state.tsx` | The single reducer: payments, eligibility, progress, the pick, reward grant, claim/redeem, tabs, reset. Guards against double-submit and duplicate grants. Optional `localStorage` persistence. |
-| `src/phone/screens.tsx` | Home, Scan, Pay + processing, Success, Failed, Pick, Reveal, Reward details. |
-| `src/phone/walkthrough.tsx` | The guided walkthrough: a timed list of real reducer actions. Scrubbing replays actions up to that moment; tapping the phone hands control to the visitor. |
-| `src/case/*` | Case-study sections, decision carousels (live screens rendered from scripted states), prototype panel. |
-| `src/art.tsx` | Inline-SVG illustrations and icons. |
-| `src/styles/*` | Tokens, page layout, phone UI, motion (with reduced-motion fallback). |
+| Directory / Root Directory | `./` |
+| Application / Framework Preset | **Vite** |
+| Install Command | `npm ci` (or the panel's default `npm install`) |
+| Build Command | `npm run build` |
+| Output / Publish Directory | `dist` |
+| Node.js version | 18 or newer |
 
-## Product logic
+`vite` is deliberately listed under `dependencies`, not `devDependencies`, so production
+installs do not omit it. That prevents the earlier deployment failure:
 
-Progress decides **when** the user can pick; the card decides **what** they get.
+> `sh: line 1: vite: command not found` / `[BUILD_UTILS_SPAWN_127] Command "vite build" exited with 127`
 
-1. Only successful, eligible payments (merchant or bill, ₹100+) add progress. Failed, cancelled, small and self-transfer payments don't.
-2. At the threshold, a reward pick unlocks. Further payments don't add progress until the reward is claimed.
-3. The user selects 1 of 3 cards and confirms. The benefit comes from configuration (`outcomePct × baseValue`, clamped to `benefitBounds`), never from animation.
-4. Claiming completes the cycle: progress restarts at 0. Vouchers can then be redeemed; cashback is final at claim.
+That error happened because the host selected the Vite preset while the repo contained no
+`package.json`, lockfile, or Vite configuration, so Vite was never installed.
+
+To verify locally:
+
+```bash
+npm ci
+npm run build
+```
+
+A successful build creates `dist/index.html` and `dist/assets/*.js`.
+
+## Restoring the Vite source project (optional, future)
+
+The original source scaffold (`package.json`, `vite.config.ts`, `tsconfig*.json`,
+`eslint.config.js`, source `index.html`) is preserved in git history at commit `990511a`;
+the `src/` source itself was never committed (`src/main.tsx`, `src/config.ts`,
+`src/state.tsx`, `src/phone/*`, `src/case/*`, `src/styles/*`, `src/art.tsx`).
+
+If you restore `src/` + that scaffold and want the host to build from source again:
+
+1. Restore the original source `index.html` (the template that loads `/src/main.tsx`) in
+   place of the current pre-built file.
+2. Restore the full development dependencies and TypeScript scripts from the original
+   `package.json`.
+3. Keep the Build Command as `npm run build` and the output directory as `dist`.
+4. Make sure the install step includes every package needed by the build. In particular,
+   do not omit packages required by `tsc` or Vite.
+5. Run `npm ci && npm run build` locally before deploying.
