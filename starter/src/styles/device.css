@@ -1,0 +1,355 @@
+/* ── The physical device ────────────────────────────────────────────────
+   Four concentric layers, outside → in, traced from the reference mockup:
+
+     .device        1.6 pt specular silver edge      radius 73 pt
+     .device__rim   4.4 pt brushed metal band        radius 71.4 pt
+     .device__bezel 11 pt black glass frame          radius 67 pt
+     .device__screen 393 × 852 display               radius 56 pt
+
+   Every measurement is an `--u` (1 pt of the 393 pt screen), so the shell
+   scales with the viewport and screens can be laid out in "points".
+   ─────────────────────────────────────────────────────────────────────── */
+
+.device {
+  position: relative;
+  width: var(--device-w);
+  height: var(--device-h);
+  border-radius: calc(73 * var(--u));
+  padding: calc(1.6 * var(--u));
+  /* polished titanium chamfer: bright top-left, dimmer bottom-right */
+  background-image: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #ded9e1 10%,
+    #a8a3ac 24%,
+    #7b7781 40%,
+    #585560 56%,
+    #6e6a75 72%,
+    #9a95a0 86%,
+    #ddd8e0 100%
+  );
+  box-shadow:
+    /* dark seam at the very edge */
+    inset 0 0 0 calc(0.5 * var(--u)) rgba(8, 5, 10, 0.9),
+    inset 0 0 calc(1.2 * var(--u)) rgba(0, 0, 0, 0.55),
+    /* drop shadow */
+    0 calc(26 * var(--u)) calc(60 * var(--u)) calc(-14 * var(--u)) rgba(0, 0, 0, 0.8),
+    0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0, 0, 0, 0.55),
+    0 0 calc(1 * var(--u)) rgba(0, 0, 0, 0.9);
+  isolation: isolate;
+}
+
+/* contact shadow on the studio floor */
+.device::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: calc(-18 * var(--u));
+  height: calc(30 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent);
+  filter: blur(calc(7 * var(--u)));
+  z-index: -1;
+}
+
+/* ── light finish: polished stainless steel ───────────────────────────── */
+
+.device[data-shell-theme='light'] {
+  background-image: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #f7f6f9 10%,
+    #e2e2e8 22%,
+    #c3c4cc 38%,
+    #a7a8b2 54%,
+    #c0c0c9 70%,
+    #e0e0e6 86%,
+    #fbfafc 100%
+  );
+  box-shadow:
+    inset 0 0 0 calc(0.5 * var(--u)) rgba(60, 60, 70, 0.55),
+    inset 0 0 calc(1.2 * var(--u)) rgba(0, 0, 0, 0.25),
+    0 calc(26 * var(--u)) calc(60 * var(--u)) calc(-14 * var(--u)) rgba(0, 0, 0, 0.35),
+    0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0, 0, 0, 0.22);
+}
+
+.device[data-shell-theme='light'] .device__rim {
+  background-image: linear-gradient(
+    152deg,
+    #fdfdfe 0%,
+    #ececf1 16%,
+    #d2d3da 36%,
+    #bcbdc6 56%,
+    #d5d5dc 78%,
+    #f4f3f7 100%
+  );
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.75),
+    inset 0 0 calc(2 * var(--u)) rgba(0, 0, 0, 0.28);
+}
+
+.device[data-shell-theme='light'] .device__btn {
+  background-image: linear-gradient(90deg, #f2f2f5 0%, #c2c3cb 48%, #8f909a 100%);
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.7),
+    calc(-1 * var(--u)) calc(1 * var(--u)) calc(2 * var(--u)) rgba(0, 0, 0, 0.28);
+}
+
+.device[data-shell-theme='light'] .device__btn--power {
+  background-image: linear-gradient(270deg, #f2f2f5 0%, #c2c3cb 48%, #8f909a 100%);
+}
+
+.device[data-shell-theme='light'] .device__bezel {
+  background: #101116;
+  box-shadow:
+    inset calc(0.6 * var(--u)) calc(0.6 * var(--u)) calc(2 * var(--u)) rgba(255, 255, 255, 0.12),
+    inset 0 calc(1.5 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.9);
+}
+
+.device[data-shell-theme='light']::after {
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.3), transparent);
+}
+
+/* ── brushed metal band, lit from the top-left ────────────────────────── */
+
+.device__rim {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(71.4 * var(--u));
+  padding: calc(4.4 * var(--u));
+  background-image:
+    linear-gradient(
+      152deg,
+      #3e3c45 0%,
+      #24222b 18%,
+      #141318 40%,
+      #100f16 60%,
+      #1a1921 80%,
+      #302e37 100%
+    );
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.1),
+    inset 0 0 calc(2 * var(--u)) rgba(0, 0, 0, 0.75);
+}
+
+/* ── side buttons ─────────────────────────────────────────────────────── */
+
+.device__btn {
+  position: absolute;
+  width: calc(2.2 * var(--u));
+  border-radius: calc(1.4 * var(--u));
+  background-image: linear-gradient(90deg, #565761 0%, #23242c 50%, #0d0e13 100%);
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.16),
+    calc(-1 * var(--u)) calc(1 * var(--u)) calc(2 * var(--u)) rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.device__btn--mute {
+  left: calc(-1 * var(--u));
+  top: calc(158 * var(--u));
+  height: calc(26 * var(--u));
+}
+
+.device__btn--vol-up {
+  left: calc(-1 * var(--u));
+  top: calc(208 * var(--u));
+  height: calc(58 * var(--u));
+}
+
+.device__btn--vol-down {
+  left: calc(-1 * var(--u));
+  top: calc(282 * var(--u));
+  height: calc(58 * var(--u));
+}
+
+.device__btn--power {
+  right: calc(-1 * var(--u));
+  top: calc(222 * var(--u));
+  height: calc(100 * var(--u));
+  background-image: linear-gradient(270deg, #565761 0%, #23242c 50%, #0d0e13 100%);
+}
+
+/* ── black glass frame ────────────────────────────────────────────────── */
+
+.device__bezel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(67 * var(--u));
+  padding: calc(11 * var(--u));
+  background: #000;
+  box-shadow:
+    /* faint top-left bevel catch */
+    inset calc(0.6 * var(--u)) calc(0.6 * var(--u)) calc(2 * var(--u)) rgba(255, 255, 255, 0.07),
+    inset 0 calc(1.5 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.9);
+}
+
+/* ── display ──────────────────────────────────────────────────────────── */
+
+.device__screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(56 * var(--u));
+  overflow: hidden;
+  background: var(--screen-bg, #fff);
+  color: var(--screen-ink, #0b0b0f);
+  isolation: isolate;
+}
+
+.device__screen[data-screen-theme='dark'] {
+  --screen-bg: #05060a;
+  --screen-ink: #f6f7fb;
+  --home-indicator: rgba(255, 255, 255, 0.92);
+}
+
+.device__screen[data-screen-theme='light'] {
+  --screen-bg: #ffffff;
+  --screen-ink: #0b0b0f;
+  --home-indicator: rgba(8, 8, 12, 0.85);
+}
+
+.device__content {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/* ── dynamic island ───────────────────────────────────────────────────── */
+
+.device__island {
+  position: absolute;
+  top: calc(10.4 * var(--u));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(101.5 * var(--u));
+  height: calc(36.4 * var(--u));
+  border-radius: calc(18.4 * var(--u));
+  background: #000;
+  z-index: 5;
+}
+
+/* front camera behind the glass */
+.device__island-lens {
+  position: absolute;
+  right: calc(1.9 * var(--u));
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(10.4 * var(--u));
+  height: calc(10.4 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 66% 34%, #2d3f86 0%, #131c46 30%, #05071a 62%, #02030a 84%);
+  box-shadow: inset 0 0 calc(1.2 * var(--u)) rgba(110, 140, 255, 0.35);
+}
+
+.device__island-lens::after {
+  content: '';
+  position: absolute;
+  inset: calc(2.4 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 28%, rgba(160, 190, 255, 0.5), transparent 58%);
+}
+
+/* ambient light sensor */
+.device__island-sensor {
+  position: absolute;
+  right: calc(16 * var(--u));
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(3 * var(--u));
+  height: calc(3 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2a2e39, #05060a 72%);
+}
+
+/* ── home indicator ───────────────────────────────────────────────────── */
+
+.device__home {
+  position: absolute;
+  left: 50%;
+  bottom: calc(8 * var(--u));
+  transform: translateX(-50%);
+  width: calc(140 * var(--u));
+  height: calc(5 * var(--u));
+  border-radius: calc(3 * var(--u));
+  background: var(--home-indicator, rgba(8, 8, 12, 0.85));
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ── glass sheen ──────────────────────────────────────────────────────── */
+
+.device__gloss {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.012) 22%, transparent 42%),
+    radial-gradient(120% 60% at 100% 0%, rgba(255, 255, 255, 0.03), transparent 60%);
+}
+
+/* ── status bar ───────────────────────────────────────────────────────── */
+
+.status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(54 * var(--u));
+  padding: 0 calc(30 * var(--u)) 0 calc(34 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 4;
+  pointer-events: none;
+  font-family: var(--font-round);
+}
+
+.status-bar__time {
+  font-size: calc(16.5 * var(--u));
+  font-weight: 600;
+  letter-spacing: calc(0.1 * var(--u));
+  /* optically centred against the taller icon cluster */
+  margin-top: calc(2 * var(--u));
+}
+
+.status-bar__icons {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  margin-top: calc(1 * var(--u));
+}
+
+.status-bar__icon {
+  display: block;
+  color: currentColor;
+}
+
+.status-bar__icon--cell {
+  width: calc(18 * var(--u));
+  height: calc(12 * var(--u));
+}
+
+.status-bar__icon--wifi {
+  width: calc(16 * var(--u));
+  height: calc(12 * var(--u));
+}
+
+.status-bar__icon--battery {
+  width: calc(27 * var(--u));
+  height: calc(13 * var(--u));
+}
+
+.status-bar--dark {
+  color: #000;
+}
+
+.status-bar--light {
+  color: #fff;
+}

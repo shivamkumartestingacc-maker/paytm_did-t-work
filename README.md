@@ -51,6 +51,26 @@ intact and no console errors.
 
 See `src/export/exporters.ts` (logic) and `src/export/ExportBar.tsx` (UI).
 
+## Starter scaffold
+
+`starter/` is a self-contained app (its own `package.json`, `vite.config.ts`,
+`tsconfig.json`) built to be handed to someone else:
+
+* the shell, the export buttons, and a **flow harness** — `SCREENS` is an ordered
+  registry of screens, screens navigate with `go(id)` / `back()`, the stage has
+  Prev / Next / Replay / shell-theme controls and jump dots, ← → keys step through.
+* two template screens (`ScreenA`, `ScreenB`) covering the patterns you need:
+  centred hero + actions, and header + summary card + list.
+
+```bash
+cd starter && npm install && npm run dev   # http://localhost:5199
+```
+
+`SCAFFOLD_PROMPT.md` flattens that whole scaffold into one paste-able document
+(rules + all 19 files, verified by extracting it and building in a clean folder):
+paste it into an agent, then send screens and say "this is screen 1, this is
+screen 2".
+
 ## Prompt pack
 
 `PROMPT.md` holds the reusable prompts for rebuilding this elsewhere: the full
