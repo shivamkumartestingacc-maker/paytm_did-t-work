@@ -7,37 +7,113 @@
  *   markup plus every same-origin CSS rule, animations included.
  */
 
-/** Copy every readable CSS rule (animations included) into one string. */
-function collectCss(): string {
-  const chunks: string[] = [];
+/**
+ * Walk every same-origin stylesheet and return the rules, scoped so the result
+ * can live inside someone else's page:
+ *   · `html` / `body` / `#root` page-level rules are dropped
+ *   · `*` becomes `.device, .device *` (no global box-sizing leaks)
+ *   · `:root` becomes `.device`, so the design tokens never override the host's
+ *   · stage/export chrome is skipped — it is not part of the screen
+ */
+/** Every rule, unscoped — used for the image, whose clone has its own document. */
+function collectAllCss(): string {
+  const out: string[] = [];
+  for (const sheet of Array.from(document.styleSheets)) {
+    try {
+      for (const rule of Array.from(sheet.cssRules)) out.push(rule.cssText);
+    } catch {
+      continue;
+    }
+  }
+  return out.join('\n');
+}
+
+function collectScopedCss(): string {
+  const out: string[] = [];
+
+  const scopeSelector = (selector: string): string | null => {
+    const head = selector.trim();
+    if (!head) return null;
+    if (/^(html|body|#root)$/i.test(head)) return null;
+    if (/^\.(stage|export)(__|\b)/.test(head)) return null;
+    if (head === ':root') return '.device';
+    if (head === '*') return '.device, .device *';
+    return head;
+  };
+
+  const visit = (rules: CSSRuleList) => {
+    for (const rule of Array.from(rules)) {
+      if (rule instanceof CSSStyleRule) {
+        const selectors = rule.selectorText.split(',').map(scopeSelector).filter(Boolean) as string[];
+        if (!selectors.length) continue;
+        let body = rule.style.cssText;
+        if (rule.selectorText.trim() === ':root') {
+          // drop the host-affecting declarations, keep the tokens
+          body = body
+            .split(';')
+            .filter((decl) => !/^\s*color-scheme\s*:/i.test(decl))
+            .join(';');
+        }
+        out.push(`${selectors.join(',')} { ${body} }`);
+        continue;
+      }
+      // media / supports blocks recurse; keyframes are copied verbatim
+      if ('cssRules' in rule && !(rule instanceof CSSKeyframesRule)) {
+        const inner = collectFrom((rule as CSSGroupingRule).cssRules);
+        if (inner.trim()) {
+          const prelude = rule.cssText.slice(0, rule.cssText.indexOf('{')).trim();
+          out.push(`${prelude} {\n${inner}\n}`);
+        }
+        continue;
+      }
+      out.push(rule.cssText);
+    }
+  };
+
+  const collectFrom = (rules: CSSRuleList): string => {
+    const before = out.length;
+    visit(rules);
+    return out.slice(before).join('\n');
+  };
+
   for (const sheet of Array.from(document.styleSheets)) {
     let rules: CSSRuleList | null = null;
     try {
       rules = sheet.cssRules;
     } catch {
-      continue; // cross-origin (e.g. Google Fonts) — skipped, fallbacks cover it
+      continue; // cross-origin (Google Fonts) — the font stack covers it
     }
-    if (!rules) continue;
-    for (const rule of Array.from(rules)) chunks.push(rule.cssText);
+    if (rules) visit(rules);
   }
-  return chunks.join('\n');
+
+  return out.join('\n');
 }
 
-const RESPONSIVE_SCREEN_W = 'min(393px, calc(100vw - 56px), calc((100svh - 132px) * 393 / 886))';
+const FONT_LINK =
+  '<link rel="preconnect" href="https://fonts.googleapis.com" />' +
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' +
+  '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />';
+
+/**
+ * Fallback scale, used only if the responsive formula cannot be read back out of
+ * the collected CSS. The live value is always taken from the stylesheet, so the
+ * export can never drift from `tokens.css`.
+ */
+const RESPONSIVE_SCREEN_W = 'min(393px, calc(100vw - 56px), calc((100svh - 216px) * 393 / 886))';
 
 /**
  * Deep clone of the device with the responsive scale resolved.
  * `mode: 'image'` freezes exact pixel dimensions (a still frame);
  * `mode: 'html'` keeps the pt-based scale so the export stays fluid.
  */
-function cloneDevice(device: HTMLElement, mode: 'image' | 'html'): HTMLElement {
+function cloneDevice(device: HTMLElement, mode: 'image' | 'html', screenW = RESPONSIVE_SCREEN_W): HTMLElement {
   const clone = device.cloneNode(true) as HTMLElement;
   const cs = getComputedStyle(device);
   const current = clone.getAttribute('style') ?? '';
   const style =
     mode === 'image'
       ? `width:${cs.width};height:${cs.height};--screen-w:${cs.getPropertyValue('--screen-w').trim() || cs.width}`
-      : `--screen-w:${RESPONSIVE_SCREEN_W}`;
+      : `--screen-w:${screenW}`;
   clone.setAttribute('style', `${current};${style};`);
 
   if (mode === 'image') {
@@ -54,7 +130,7 @@ export async function snapshotPng(device: HTMLElement, scale = 3): Promise<Blob>
   const rect = device.getBoundingClientRect();
   const clone = cloneDevice(device, 'image');
   // A still frame: skip entry animations so the resting layout is drawn.
-  const css = `${collectCss()}\n*, *::before, *::after { animation: none !important; transition: none !important; }`;
+  const css = `${collectAllCss()}\n*, *::before, *::after { animation: none !important; transition: none !important; }`;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${rect.width}" height="${rect.height}">
   <foreignObject width="100%" height="100%">
@@ -86,20 +162,54 @@ export async function snapshotPng(device: HTMLElement, scale = 3): Promise<Blob>
   );
 }
 
-/** The full HTML document for the current screen, animations included. */
+/** The device at its current scale, ready to be pasted into any page. */
+function buildParts(device: HTMLElement) {
+  const css = collectScopedCss();
+  // keep the exported scale identical to the one the app is using right now
+  const fluid = css.match(/--screen-w:\s*([^;]+);/)?.[1].trim() || RESPONSIVE_SCREEN_W;
+  const clone = cloneDevice(device, 'html', fluid);
+  return { css, markup: clone.outerHTML };
+}
+
+/**
+ * Just the embeddable region: scoped CSS + device markup.
+ * This is the thing to drop into an existing page or component — it does not
+ * touch `html`, `body`, `*`, `:root`, and needs no build step.
+ */
+export function buildEmbed(device: HTMLElement): string {
+  const { css, markup } = buildParts(device);
+  return `<!-- iPhone shell + screen · self-contained. Paste inside <body>. -->
+<style>
+/* scoped: tokens live on .device, not :root */
+${css}
+.device { margin: 0; }
+</style>
+${markup}`;
+}
+
+/** The full HTML document for the current screen (animation included). */
 export function buildStandaloneHtml(device: HTMLElement, title: string): string {
-  const clone = cloneDevice(device, 'html');
-  const css = collectCss();
+  const { css, markup } = buildParts(device);
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${title}</title>
+${FONT_LINK}
 <style>
+/* ── PASTE-IN START ────────────────────────────────────────────────────
+   Everything down to "PASTE-IN END" is self-contained: the markup at the
+   bottom of this file plus these rules. The design tokens live on .device,
+   not :root, so this block cannot affect the page it lands in.
+   ───────────────────────────────────────────────────────────────────── */
 ${css}
 
-/* export shell: centre the device on the studio backdrop */
+/* block layout when embedded in a host page (no centering) */
+.device { margin: 0; }
+/* ── PASTE-IN END ────────────────────────────────────────────────────── */
+
+/* standalone page shell only — do NOT copy this part */
 body {
   margin: 0;
   min-height: 100svh;
@@ -108,11 +218,10 @@ body {
   padding: 24px;
   background: radial-gradient(120% 90% at 50% -10%, #24252e 0%, #14151a 46%, #0a0a0c 100%), #0f0f12;
 }
-.device { margin: 0; }
 </style>
 </head>
 <body>
-${clone.outerHTML}
+${markup}
 </body>
 </html>`;
 }
@@ -136,18 +245,26 @@ export async function copyImage(device: HTMLElement, filename = 'screen.png'): P
   }
 }
 
-/** Copy the self-contained HTML for the device. */
-export async function copyCode(device: HTMLElement, title = 'screen'): Promise<CopyResult> {
-  const html = buildStandaloneHtml(device, title);
+async function copyText(text: string, filename: string): Promise<CopyResult> {
   try {
-    await navigator.clipboard.writeText(html);
+    await navigator.clipboard.writeText(text);
     return 'copied';
   } catch {
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    a.download = `${title.replace(/\s+/g, '-').toLowerCase()}.html`;
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/html' }));
+    a.download = filename;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     return 'downloaded';
   }
+}
+
+/** Copy the self-contained HTML document for the device. */
+export function copyCode(device: HTMLElement, title = 'screen'): Promise<CopyResult> {
+  return copyText(buildStandaloneHtml(device, title), `${title.replace(/\s+/g, '-').toLowerCase()}.html`);
+}
+
+/** Copy only the paste-in region (scoped CSS + markup) for embedding elsewhere. */
+export function copyEmbed(device: HTMLElement, title = 'screen'): Promise<CopyResult> {
+  return copyText(buildEmbed(device), `${title.replace(/\s+/g, '-').toLowerCase()}-embed.html`);
 }

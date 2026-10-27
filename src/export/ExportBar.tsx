@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { copyCode, copyImage, type CopyResult } from './exporters';
+import { copyCode, copyEmbed, copyImage, type CopyResult } from './exporters';
 
 export type ExportBarProps = {
   /** Returns the device element to capture. */
@@ -8,7 +8,24 @@ export type ExportBarProps = {
   title: string;
 };
 
-type Status = { kind: 'idle' } | { kind: 'busy'; what: 'image' | 'code' } | { kind: 'done'; what: 'image' | 'code'; result: CopyResult } | { kind: 'error'; message: string };
+type Job = 'image' | 'code' | 'embed';
+type Status =
+  | { kind: 'idle' }
+  | { kind: 'busy'; what: Job }
+  | { kind: 'done'; what: Job; result: CopyResult }
+  | { kind: 'error'; message: string };
+
+const BUSY: Record<Job, string> = {
+  image: 'Rendering PNG…',
+  code: 'Packing HTML…',
+  embed: 'Packing embed…',
+};
+
+const DONE: Record<Job, Record<CopyResult, string>> = {
+  image: { copied: 'Screenshot copied to clipboard', downloaded: 'Clipboard blocked — PNG downloaded' },
+  code: { copied: 'Single-file HTML copied', downloaded: 'Clipboard blocked — HTML downloaded' },
+  embed: { copied: 'Embed copied — paste into any page', downloaded: 'Clipboard blocked — embed downloaded' },
+};
 
 /**
  * Two actions:
@@ -32,12 +49,17 @@ export function ExportBar({ getTarget, title }: ExportBarProps) {
   }, []);
 
   const run = useCallback(
-    async (what: 'image' | 'code') => {
+    async (what: Job) => {
       const target = getTarget();
       if (!target) return;
       announce({ kind: 'busy', what });
       try {
-        const result = what === 'image' ? await copyImage(target, `${title.replace(/\s+/g, '-').toLowerCase()}.png`) : await copyCode(target, title);
+        const result =
+          what === 'image'
+            ? await copyImage(target, `${title.replace(/\s+/g, '-').toLowerCase()}.png`)
+            : what === 'code'
+              ? await copyCode(target, title)
+              : await copyEmbed(target, title);
         announce({ kind: 'done', what, result });
       } catch (err) {
         announce({ kind: 'error', message: err instanceof Error ? err.message : 'Export failed' });
@@ -48,15 +70,9 @@ export function ExportBar({ getTarget, title }: ExportBarProps) {
 
   const message =
     status.kind === 'busy'
-      ? status.what === 'image'
-        ? 'Rendering PNG…'
-        : 'Packing HTML…'
+      ? BUSY[status.what]
       : status.kind === 'done'
-        ? status.result === 'copied'
-          ? status.what === 'image'
-            ? 'Screenshot copied to clipboard'
-            : 'Code copied to clipboard'
-          : 'Clipboard blocked — file downloaded'
+        ? DONE[status.what][status.result]
         : status.kind === 'error'
           ? status.message
           : '';
@@ -77,6 +93,20 @@ export function ExportBar({ getTarget, title }: ExportBarProps) {
             <path d="m9 17-5-5 5-5m6 10 5-5-5-5" />
           </svg>
           Copy code
+        </button>
+
+        <button
+          className="export__btn"
+          type="button"
+          onClick={() => run('embed')}
+          disabled={status.kind === 'busy'}
+          title="Just the scoped CSS + markup, ready to paste into an existing page"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 5h16v14H4z" />
+            <path d="M9 5v14M4 10h5" />
+          </svg>
+          Copy embed
         </button>
       </div>
 

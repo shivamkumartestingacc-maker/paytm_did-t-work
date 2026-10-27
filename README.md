@@ -30,15 +30,24 @@ titanium | `light` polished stainless steel), `statusBar`, `time`,
 
 ## Exports
 
-Two buttons sit under the device on the stage:
+Three buttons sit under the device on the stage:
 
 * **Copy image** — rasterises the live device (same DOM, same CSS) through an
   SVG `foreignObject` at 3× and puts the PNG on the clipboard. Entry animations
   are frozen first so you get the resting layout. Falls back to a download when
   the Clipboard API is unavailable.
-* **Copy code** — copies one self-contained HTML file: the device markup plus
-  every same-origin CSS rule, `@keyframes` included. Paste it into a file or a
-  chat and the screen still works, animated, with no network requests.
+* **Copy code** — copies one self-contained HTML document: the device markup
+  plus every CSS rule, `@keyframes` included. Paste it into a file or a chat and
+  the screen still works, animated, with no network requests.
+* **Copy embed** — only the paste-in region: CSS scoped to `.device` plus the
+  markup. Drop it inside the `<body>` of an existing page/component and the
+  screen appears exactly as designed; the export never touches `html`, `body`,
+  `*` or `:root`, so it cannot restyle the host page.
+
+Verified by pasting the embed output into a deliberately hostile page (`* {
+box-sizing: content-box }`, its own `:root` variables, a `body` background and
+padding): the device still renders at exactly 393 × 852 pt with its animations
+intact and no console errors.
 
 See `src/export/exporters.ts` (logic) and `src/export/ExportBar.tsx` (UI).
 

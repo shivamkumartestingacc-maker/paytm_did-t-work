@@ -116,7 +116,17 @@ Place them on the stage under the device (not inside the phone).
   artwork, the layout **and** the animation. Target size: under ~80 KB, no network requests.
 - `navigator.clipboard.writeText(html)`, download fallback.
 
-**Both buttons:** a `busy` state while working, an `aria-live="polite"` status line
+**Button 3 — “Copy embed”.**
+- Same rules as button 2, but emit **only the paste-in region**: `<style>` with
+  the scoped CSS plus the device markup, no `<html>`, `<head>`, `body` or page shell.
+- This is what gets added to an existing web file. It must be safe to drop into
+  someone else's page: scope `:root` → `.device`, `*` → `.device, .device *`,
+  drop any `html` / `body` / `#root` rule, and never emit a `body` rule.
+- Verify by pasting it into a page that sets its own `* { box-sizing }`, `:root`
+  variables and a `body` background; the device must still land at exactly
+  393 × 852 pt and keep its animations.
+
+**All three buttons:** a `busy` state while working, an `aria-live="polite"` status line
 ("Screenshot copied to clipboard" / "Code copied to clipboard" / "Clipboard blocked — file
 downloaded"), keep the message ~4 s, and `disabled` while a job runs.
 
