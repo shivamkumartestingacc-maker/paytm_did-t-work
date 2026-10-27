@@ -57,6 +57,30 @@ Every screen sits under the same chrome the iPhone has:
 
 The placeholder screen can draw those guides (toggle *Guides* in the stage).
 
+## The prototype
+
+`src/App.tsx` wires a three-screen flow for the "Perfect Month" badge concept:
+
+```
+home  ──tap "New badge unlocked" toast──▶  unlock  ──View Badge──▶  badge detail
+  ▲                                          │                        │
+  └──────────── "Got to Home" / "Apply ×3 boost" ─────────────────────┘
+```
+
+* **home** — budget card, badge shelf, recent activity, tab bar. A floating
+  snackbar announces the badge; the earned tile opens the detail.
+* **unlock** — the reference screen, measured off the mockup: badge at
+  295 pt with its `×3` chip, "Perfect Month" caption, the two-line title,
+  the rating card at 600 pt, the 48 pt primary pill at 702 pt, and
+  "Got to Home" at 778 pt.
+* **badge detail** — what the badge is, streak stats, the rules, and the
+  `Apply ×3 boost` action that closes the loop back to home.
+
+Motion: badge springs in (`cubic-bezier(.2,1.32,.3,1)`), rays scale and drift,
+a specular sweep crosses the stone, confetti bursts outward, the title and copy
+rise on a 80 ms stagger, and the rating sheet slides up on a 420 ms spring.
+`prefers-reduced-motion` collapses all of it to a single frame.
+
 ## Files
 
 | File | What it holds |
@@ -68,7 +92,12 @@ The placeholder screen can draw those guides (toggle *Guides* in the stage).
 | `src/styles/device.css` | The shell, island, status bar |
 | `src/styles/stage.css` | Studio backdrop, glow, stage controls |
 | `src/styles/screen.css` | Placeholder screen styles |
-| `src/App.tsx` | Stage: device + light/dark and guides toggles |
+| `src/App.tsx` | Stage + the home → unlock → detail flow |
+| `src/screens/*` | The three app screens and the rating sheet |
+| `src/art/BadgeGem.tsx` | The faceted SVG gem and pouch emblem |
+| `src/art/Sparkles.tsx` | Rating-card sparkles, unlock confetti trail |
+| `src/art/Confetti.tsx` | Deterministic CSS-transform confetti burst |
+| `src/styles/prototype.css` | All screen layout + motion, in points |
 
 To build a real screen, drop a component into `src/screens/` and pass it as
 `children` of `DeviceShell`; it automatically inherits the device scale,

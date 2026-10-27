@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { StatusBar } from './StatusBar';
 
 export type ScreenTheme = 'light' | 'dark';
@@ -14,6 +14,8 @@ export type DeviceShellProps = {
   time?: string;
   /** Hide the home indicator (e.g. for a full-screen video or splash). */
   homeIndicator?: boolean;
+  /** Override the home-indicator colour (some apps draw it light on light). */
+  homeIndicatorColor?: string;
   className?: string;
   /** Accessible label for the device. */
   label?: string;
@@ -37,11 +39,12 @@ export function DeviceShell({
   statusBar = true,
   time = '9:41',
   homeIndicator = true,
+  homeIndicatorColor,
   className,
   label = 'iPhone prototype',
 }: DeviceShellProps) {
   return (
-    <div className={`device${className ? ` ${className}` : ''}`} role="img" aria-label={label}>
+    <div className={`device${className ? ` ${className}` : ''}`} role="group" aria-label={label}>
       {/* physical side buttons */}
       <span className="device__btn device__btn--mute" aria-hidden="true" />
       <span className="device__btn device__btn--vol-up" aria-hidden="true" />
@@ -50,7 +53,11 @@ export function DeviceShell({
 
       <div className="device__rim">
         <div className="device__bezel">
-          <div className="device__screen" data-screen-theme={screenTheme}>
+          <div
+            className="device__screen"
+            data-screen-theme={screenTheme}
+            style={homeIndicatorColor ? ({ '--home-indicator': homeIndicatorColor } as CSSProperties) : undefined}
+          >
             <div className="device__content">{children}</div>
 
             {statusBar && <StatusBar time={time} tone={screenTheme === 'light' ? 'dark' : 'light'} />}

@@ -5,6 +5,7 @@ import './styles/tokens.css';
 import './styles/stage.css';
 import './styles/device.css';
 import './styles/screen.css';
+import './styles/prototype.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
