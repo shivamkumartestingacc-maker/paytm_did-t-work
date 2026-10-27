@@ -6,6 +6,7 @@ import './styles/stage.css';
 import './styles/device.css';
 import './styles/screen.css';
 import './styles/prototype.css';
+import './styles/paytm.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

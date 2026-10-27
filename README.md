@@ -108,6 +108,36 @@ Every screen sits under the same chrome the iPhone has:
 
 The placeholder screen can draw those guides (toggle *Guides* in the stage).
 
+## The Paytm rewards flow
+
+`src/paytm/*` is a second, self-contained flow: pay → scratch → redeem. The
+stage toggle under the device switches between this and the badge concept.
+
+```
+pay  ──Pay ₹500──▶  success (+ green tick)  ──tap the wiggling card──▶  rewards
+                                                                          │
+      product / coupon page  ◀──────── scratch the canvas, hit View Details ┘
+                 └── Redeem Now ──▶ "coupon redeemed" sheet
+```
+
+* **pay** (`PayScreen.tsx`) — UPI PIN keypad, four dots, then a processing
+  sheet that resolves into a single green tick. No confetti here on purpose.
+* **success** (`SuccessScreen.tsx`) — payer block, ref number, action pills and
+  the won reward card, which wiggles until it is tapped.
+* **rewards** (`RewardsScreen.tsx`) — "Your Rewards" strip with coin/gift/box
+  chips and the scratch card. The foil is a real `<canvas>`: gradient, rings,
+  gradient type, gold cap and grain, erased with `destination-out` brush
+  strokes. Alpha is sampled one pixel in fourteen; past ~42 % clear the canvas
+  unmounts, the prize underneath animates in and a confetti burst fires.
+* **product** (`ProductScreen.tsx`) — plum hero, GIVA tag, the four feature
+  discs, coupon code with Copy, How to Avail, sticky Redeem Now bar and the
+  redeemed bottom sheet.
+
+All of it is point-based (`calc(<pt> * var(--u))`), palette sampled from the
+supplied screenshots (`#DFF2F9` page, `#00B9F1` cyan, `#012B72` navy,
+`#12B76A` success green), and `prefers-reduced-motion` keeps the confirmation
+readable while dropping the motion.
+
 ## The prototype
 
 `src/App.tsx` wires a three-screen flow for the "Perfect Month" badge concept:
@@ -150,6 +180,8 @@ rise on a 80 ms stagger, and the rating sheet slides up on a 420 ms spring.
 | `src/art/Confetti.tsx` | Deterministic CSS-transform confetti burst |
 | `src/styles/prototype.css` | All screen layout + motion, in points |
 | `src/export/*` | Copy-image / copy-code implementation |
+| `src/paytm/*` | The Paytm pay → success → scratch → coupon flow |
+| `src/styles/paytm.css` | All Paytm screen layout + motion, in points |
 
 To build a real screen, drop a component into `src/screens/` and pass it as
 `children` of `DeviceShell`; it automatically inherits the device scale,

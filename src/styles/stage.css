@@ -268,3 +268,40 @@
     display: none;
   }
 }
+
+/* ── screen jump dots ─────────────────────────────────────────────────── */
+
+.stage__jump {
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.stage__jump-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.stage__jump-dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.stage__jump-dot[aria-selected='true'] {
+  background: #fff;
+  transform: scale(1.35);
+}
+
+.stage[data-studio='light'] .stage__jump-dot {
+  background: rgba(20, 24, 40, 0.22);
+}
+
+.stage[data-studio='light'] .stage__jump-dot[aria-selected='true'] {
+  background: #16171c;
+}

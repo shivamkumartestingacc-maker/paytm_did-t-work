@@ -17,19 +17,31 @@ const PIECES = Array.from({ length: 26 }, (_, i) => {
   };
 });
 
-export function Confetti({ burstKey }: { burstKey: number }) {
+export function Confetti({
+  burstKey,
+  scale = 1,
+  spread = 1,
+  count = PIECES.length,
+}: {
+  burstKey: number;
+  /** Piece size multiplier. */
+  scale?: number;
+  /** Travel-distance multiplier. */
+  spread?: number;
+  count?: number;
+}) {
   return (
     <div className="confetti" key={burstKey} aria-hidden="true">
-      {PIECES.map((p, i) => (
+      {PIECES.slice(0, count).map((p, i) => (
         <span
           key={i}
           className={`confetti__piece confetti__piece--${p.hue}`}
           style={
             {
-              width: `${p.size * 3.4}pt`,
-              height: `${p.size}pt`,
-              '--x': `${p.x}pt`,
-              '--y': `${p.y}pt`,
+              width: `${p.size * 3.4 * scale}pt`,
+              height: `${p.size * scale}pt`,
+              '--x': `${p.x * spread}pt`,
+              '--y': `${p.y * spread}pt`,
               '--rot': `${p.rot}deg`,
               animationDelay: `${p.delay}ms`,
             } as CSSProperties

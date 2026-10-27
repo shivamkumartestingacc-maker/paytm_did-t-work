@@ -19,6 +19,10 @@
   background: var(--app-bg);
 }
 
+.screens--paytm {
+  background: #e9f7fd;
+}
+
 .scr {
   position: absolute;
   inset: 0;
