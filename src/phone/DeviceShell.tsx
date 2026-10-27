@@ -2,12 +2,16 @@ import type { CSSProperties, ReactNode } from 'react';
 import { StatusBar } from './StatusBar';
 
 export type ScreenTheme = 'light' | 'dark';
+/** Body finish of the physical phone. */
+export type ShellTheme = 'dark' | 'light';
 
 export type DeviceShellProps = {
   /** The app screen. Rendered inside a 393 × 852 area, clipped to the display corners. */
   children?: ReactNode;
   /** Screen chrome theme — status bar glyphs, home indicator, default backdrop. */
   screenTheme?: ScreenTheme;
+  /** Body finish: `dark` = graphite titanium, `light` = polished stainless steel. */
+  shellTheme?: ShellTheme;
   /** Show the iOS status bar. `false` hides it for full-bleed screens. */
   statusBar?: boolean;
   /** Clock label shown in the status bar. */
@@ -36,6 +40,7 @@ export type DeviceShellProps = {
 export function DeviceShell({
   children,
   screenTheme = 'light',
+  shellTheme = 'dark',
   statusBar = true,
   time = '9:41',
   homeIndicator = true,
@@ -44,7 +49,12 @@ export function DeviceShell({
   label = 'iPhone prototype',
 }: DeviceShellProps) {
   return (
-    <div className={`device${className ? ` ${className}` : ''}`} role="group" aria-label={label}>
+    <div
+      className={`device${className ? ` ${className}` : ''}`}
+      data-shell-theme={shellTheme}
+      role="group"
+      aria-label={label}
+    >
       {/* physical side buttons */}
       <span className="device__btn device__btn--mute" aria-hidden="true" />
       <span className="device__btn device__btn--vol-up" aria-hidden="true" />

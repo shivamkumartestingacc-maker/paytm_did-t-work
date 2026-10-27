@@ -24,8 +24,30 @@ import { HomeScreen } from './screens/HomeScreen';
 ```
 
 `DeviceShell` props: `screenTheme` (`light` | `dark` — drives the status-bar
-glyphs, home indicator and default backdrop), `statusBar`, `time`,
-`homeIndicator`, `label`, `className`.
+glyphs, home indicator and default backdrop), `shellTheme` (`dark` graphite
+titanium | `light` polished stainless steel), `statusBar`, `time`,
+`homeIndicator`, `homeIndicatorColor`, `label`, `className`.
+
+## Exports
+
+Two buttons sit under the device on the stage:
+
+* **Copy image** — rasterises the live device (same DOM, same CSS) through an
+  SVG `foreignObject` at 3× and puts the PNG on the clipboard. Entry animations
+  are frozen first so you get the resting layout. Falls back to a download when
+  the Clipboard API is unavailable.
+* **Copy code** — copies one self-contained HTML file: the device markup plus
+  every same-origin CSS rule, `@keyframes` included. Paste it into a file or a
+  chat and the screen still works, animated, with no network requests.
+
+See `src/export/exporters.ts` (logic) and `src/export/ExportBar.tsx` (UI).
+
+## Prompt pack
+
+`PROMPT.md` holds the reusable prompts for rebuilding this elsewhere: the full
+master prompt (shell + screens + motion + export buttons), a short "add one
+screen" prompt, and a "just add the buttons" prompt, plus the pitfalls that
+usually break image export.
 
 ## How the geometry works
 
@@ -98,6 +120,7 @@ rise on a 80 ms stagger, and the rating sheet slides up on a 420 ms spring.
 | `src/art/Sparkles.tsx` | Rating-card sparkles, unlock confetti trail |
 | `src/art/Confetti.tsx` | Deterministic CSS-transform confetti burst |
 | `src/styles/prototype.css` | All screen layout + motion, in points |
+| `src/export/*` | Copy-image / copy-code implementation |
 
 To build a real screen, drop a component into `src/screens/` and pass it as
 `children` of `DeviceShell`; it automatically inherits the device scale,

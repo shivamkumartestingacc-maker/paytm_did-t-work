@@ -53,6 +53,64 @@
   z-index: -1;
 }
 
+/* ── light finish: polished stainless steel ───────────────────────────── */
+
+.device[data-shell-theme='light'] {
+  background-image: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #f7f6f9 10%,
+    #e2e2e8 22%,
+    #c3c4cc 38%,
+    #a7a8b2 54%,
+    #c0c0c9 70%,
+    #e0e0e6 86%,
+    #fbfafc 100%
+  );
+  box-shadow:
+    inset 0 0 0 calc(0.5 * var(--u)) rgba(60, 60, 70, 0.55),
+    inset 0 0 calc(1.2 * var(--u)) rgba(0, 0, 0, 0.25),
+    0 calc(26 * var(--u)) calc(60 * var(--u)) calc(-14 * var(--u)) rgba(0, 0, 0, 0.35),
+    0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0, 0, 0, 0.22);
+}
+
+.device[data-shell-theme='light'] .device__rim {
+  background-image: linear-gradient(
+    152deg,
+    #fdfdfe 0%,
+    #ececf1 16%,
+    #d2d3da 36%,
+    #bcbdc6 56%,
+    #d5d5dc 78%,
+    #f4f3f7 100%
+  );
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.75),
+    inset 0 0 calc(2 * var(--u)) rgba(0, 0, 0, 0.28);
+}
+
+.device[data-shell-theme='light'] .device__btn {
+  background-image: linear-gradient(90deg, #f2f2f5 0%, #c2c3cb 48%, #8f909a 100%);
+  box-shadow:
+    inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.7),
+    calc(-1 * var(--u)) calc(1 * var(--u)) calc(2 * var(--u)) rgba(0, 0, 0, 0.28);
+}
+
+.device[data-shell-theme='light'] .device__btn--power {
+  background-image: linear-gradient(270deg, #f2f2f5 0%, #c2c3cb 48%, #8f909a 100%);
+}
+
+.device[data-shell-theme='light'] .device__bezel {
+  background: #101116;
+  box-shadow:
+    inset calc(0.6 * var(--u)) calc(0.6 * var(--u)) calc(2 * var(--u)) rgba(255, 255, 255, 0.12),
+    inset 0 calc(1.5 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.9);
+}
+
+.device[data-shell-theme='light']::after {
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.3), transparent);
+}
+
 /* ── brushed metal band, lit from the top-left ────────────────────────── */
 
 .device__rim {

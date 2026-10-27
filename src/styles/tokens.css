@@ -4,7 +4,7 @@
   /* Geometry, derived from the reference mockup (screen = 393 × 852 pt):
        screen radius 56pt · frame 17pt · outer radius 73pt
        device = 427 × 886 pt                                          */
-  --screen-w: min(393px, calc(100vw - 56px), calc((100svh - 132px) * 393 / 886));
+  --screen-w: min(393px, calc(100vw - 56px), calc((100svh - 216px) * 393 / 886));
   --u: calc(var(--screen-w) / 393);
   --device-w: calc(var(--screen-w) * 427 / 393);
   --device-h: calc(var(--screen-w) * 886 / 393);
