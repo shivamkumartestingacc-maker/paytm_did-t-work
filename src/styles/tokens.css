@@ -1,0 +1,47 @@
+:root {
+  color-scheme: dark;
+
+  /* Geometry, derived from the reference mockup (screen = 393 × 852 pt):
+       screen radius 56pt · frame 17pt · outer radius 73pt
+       device = 427 × 886 pt                                          */
+  --screen-w: min(393px, calc(100vw - 56px), calc((100svh - 132px) * 393 / 886));
+  --u: calc(var(--screen-w) / 393);
+  --device-w: calc(var(--screen-w) * 427 / 393);
+  --device-h: calc(var(--screen-w) * 886 / 393);
+
+  /* Shell materials */
+  --titanium-hi: rgba(255, 255, 255, 0.7);
+  --titanium-body: #0c0d11;
+
+  /* Studio backdrop */
+  --studio-bg: #0f0f12;
+  --studio-glow: rgba(132, 146, 200, 0.26);
+
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  --font-round: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--studio-bg);
+  color: #f5f5f7;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}

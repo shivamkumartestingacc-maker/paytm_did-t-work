@@ -1,41 +1,75 @@
-# Making UPI Rewards Worth Earning
+# iPhone Shell — CSS mockup for interactive prototypes
 
-A long-form product-design case study with an interactive mobile prototype for a Paytm rewards concept.
-Independent concept: not affiliated with, commissioned or endorsed by Paytm. All payments and rewards are simulated.
-
-## Run / host
+A pixel-measured, image-free iPhone shell built entirely from CSS gradients.
+Any screen renders inside it at real 393 × 852 pt, clipped to the display
+corners and sitting under the dynamic island — so a screen can be prototyped
+once and shown as a device mockup at any size.
 
 ```bash
 npm install
-npm run dev            # local development
-npm test               # reducer + config unit tests
-npm run build:single   # one self-contained HTML file in dist-single/ — host it anywhere (Netlify drop, GitHub Pages, S3)
+npm run dev            # live preview
+npm run build          # static build
+npm run build:single   # one self-contained HTML file in dist-single/
 ```
 
-E2E checks (the 12 required scenarios + walkthrough):
+## Using it
 
-```bash
-npm run build && npx vite preview --port 4180 &
-node e2e/scenarios.mjs
+```tsx
+import { DeviceShell } from './phone/DeviceShell';
+import { HomeScreen } from './screens/HomeScreen';
+
+<DeviceShell screenTheme="light" time="9:41">
+  <HomeScreen />
+</DeviceShell>
 ```
 
-## Where things live
+`DeviceShell` props: `screenTheme` (`light` | `dark` — drives the status-bar
+glyphs, home indicator and default backdrop), `statusBar`, `time`,
+`homeIndicator`, `label`, `className`.
+
+## How the geometry works
+
+The reference mockup was measured pixel-by-pixel; every number below is in
+points of the 393 pt virtual screen and is emitted as `--u`:
+
+| Layer | Radius | Thickness | Colour |
+|---|---|---|---|
+| `.device` | 73 pt | 1.6 pt | polished titanium chamfer + dark seam |
+| `.device__rim` | 71.4 pt | 4.4 pt | brushed metal band |
+| `.device__bezel` | 67 pt | 11 pt | black glass |
+| `.device__screen` | 56 pt | 393 × 852 | the app |
+
+Because the whole shell is scaled by `--u`, screen content should be authored in
+points too:
+
+```css
+padding: calc(16 * var(--u));   /* 16 pt, whatever the device size */
+font-size: calc(17 * var(--u));
+```
+
+## Safe areas
+
+Every screen sits under the same chrome the iPhone has:
+
+- **54 pt** status bar (clock left, cellular / Wi-Fi / battery right)
+- **34 pt** home-indicator zone at the bottom
+- the dynamic island occupies the top-centre **101.5 × 36.4 pt**
+
+The placeholder screen can draw those guides (toggle *Guides* in the stage).
+
+## Files
 
 | File | What it holds |
 |---|---|
-| `src/config.ts` | **All demo configuration**: threshold (5), start progress, minimum amount, eligible payment types, reward cards and their outcome (50% / 100%), benefit bounds, expiry, processing and scan timings, payment presets, persistence. |
-| `src/state.tsx` | The single reducer: payments, eligibility, progress, the pick, reward grant, claim/redeem, tabs, reset. Guards against double-submit and duplicate grants. Optional `localStorage` persistence. |
-| `src/phone/screens.tsx` | Home, Scan, Pay + processing, Success, Failed, Pick, Reveal, Reward details. |
-| `src/phone/walkthrough.tsx` | The guided walkthrough: a timed list of real reducer actions. Scrubbing replays actions up to that moment; tapping the phone hands control to the visitor. |
-| `src/case/*` | Case-study sections, decision carousels (live screens rendered from scripted states), prototype panel. |
-| `src/art.tsx` | Inline-SVG illustrations and icons. |
-| `src/styles/*` | Tokens, page layout, phone UI, motion (with reduced-motion fallback). |
+| `src/phone/DeviceShell.tsx` | Shell markup: layers, island, home indicator, gloss |
+| `src/phone/StatusBar.tsx` | iOS status bar (inline SVG glyphs) |
+| `src/phone/PlaceholderScreen.tsx` | The empty screen slot + safe-area guides |
+| `src/styles/tokens.css` | Geometry scale (`--u`, `--device-w`) and type |
+| `src/styles/device.css` | The shell, island, status bar |
+| `src/styles/stage.css` | Studio backdrop, glow, stage controls |
+| `src/styles/screen.css` | Placeholder screen styles |
+| `src/App.tsx` | Stage: device + light/dark and guides toggles |
 
-## Product logic
-
-Progress decides **when** the user can pick; the card decides **what** they get.
-
-1. Only successful, eligible payments (merchant or bill, ₹100+) add progress. Failed, cancelled, small and self-transfer payments don't.
-2. At the threshold, a reward pick unlocks. Further payments don't add progress until the reward is claimed.
-3. The user selects 1 of 3 cards and confirms. The benefit comes from configuration (`outcomePct × baseValue`, clamped to `benefitBounds`), never from animation.
-4. Claiming completes the cycle: progress restarts at 0. Vouchers can then be redeemed; cashback is final at claim.
+To build a real screen, drop a component into `src/screens/` and pass it as
+`children` of `DeviceShell`; it automatically inherits the device scale,
+the display clipping and the chrome layering.

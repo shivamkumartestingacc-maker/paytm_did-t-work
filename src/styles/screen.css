@@ -1,0 +1,131 @@
+.slot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--u));
+  font-family: var(--font-round);
+  text-align: center;
+  background:
+    radial-gradient(120% 70% at 50% 0%, #ffffff 0%, #f4f5f8 58%, #eceef3 100%);
+  color: #0b0b0f;
+}
+
+.slot--dark {
+  background: radial-gradient(120% 70% at 50% 0%, #16171d 0%, #0a0b10 58%, #05060a 100%);
+  color: #f4f5f9;
+}
+
+/* safe-area / layout guides ------------------------------------------------ */
+
+.slot__guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed rgba(120, 132, 168, 0.5);
+  z-index: 2;
+}
+
+.slot--dark .slot__guide {
+  border-top-color: rgba(140, 160, 220, 0.42);
+}
+
+.slot__guide--status {
+  top: calc(54 * var(--u));
+}
+
+.slot__guide--home {
+  bottom: calc(34 * var(--u));
+}
+
+.slot__guide-label {
+  position: absolute;
+  right: calc(14 * var(--u));
+  top: calc(4 * var(--u));
+  font-size: calc(8.5 * var(--u));
+  letter-spacing: calc(0.6 * var(--u));
+  text-transform: uppercase;
+  color: rgba(96, 108, 140, 0.85);
+  font-family: var(--font-ui);
+}
+
+.slot--dark .slot__guide-label {
+  color: rgba(150, 165, 205, 0.8);
+}
+
+/* placeholder body --------------------------------------------------------- */
+
+.slot__mark {
+  width: calc(66 * var(--u));
+  height: calc(66 * var(--u));
+  border-radius: calc(19 * var(--u));
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #ffffff, #e9ebf1);
+  box-shadow:
+    inset 0 0 0 calc(1 * var(--u)) rgba(15, 18, 30, 0.08),
+    0 calc(8 * var(--u)) calc(18 * var(--u)) calc(-6 * var(--u)) rgba(20, 24, 40, 0.22);
+}
+
+.slot--dark .slot__mark {
+  background: linear-gradient(160deg, #23252e, #14161c);
+  box-shadow:
+    inset 0 0 0 calc(1 * var(--u)) rgba(255, 255, 255, 0.08),
+    0 calc(8 * var(--u)) calc(18 * var(--u)) calc(-6 * var(--u)) rgba(0, 0, 0, 0.6);
+}
+
+.slot__mark svg {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  color: rgba(20, 24, 40, 0.55);
+}
+
+.slot--dark .slot__mark svg {
+  color: rgba(235, 240, 255, 0.62);
+}
+
+.slot__title {
+  margin: 0;
+  font-size: calc(19 * var(--u));
+  font-weight: 600;
+  letter-spacing: calc(-0.3 * var(--u));
+}
+
+.slot__sub {
+  margin: 0;
+  max-width: calc(240 * var(--u));
+  font-family: var(--font-ui);
+  font-size: calc(11.5 * var(--u));
+  line-height: 1.5;
+  color: rgba(88, 95, 115, 0.9);
+}
+
+.slot--dark .slot__sub {
+  color: rgba(158, 168, 192, 0.9);
+}
+
+.slot__chips {
+  display: flex;
+  gap: calc(6 * var(--u));
+  margin-top: calc(2 * var(--u));
+}
+
+.slot__chip {
+  font-family: var(--font-ui);
+  font-size: calc(9 * var(--u));
+  letter-spacing: calc(0.3 * var(--u));
+  padding: calc(4 * var(--u)) calc(9 * var(--u));
+  border-radius: 999px;
+  color: rgba(70, 78, 100, 0.9);
+  background: rgba(15, 18, 30, 0.05);
+  box-shadow: inset 0 0 0 calc(0.7 * var(--u)) rgba(15, 18, 30, 0.06);
+}
+
+.slot--dark .slot__chip {
+  color: rgba(170, 182, 210, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 calc(0.7 * var(--u)) rgba(255, 255, 255, 0.06);
+}
